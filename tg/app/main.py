@@ -11,7 +11,6 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
-import asyncio
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -285,6 +284,8 @@ async def help_callback(callback: CallbackQuery):
 
 async def main():
     logger.info("Запуск Telegram бота...")
+    await bot.delete_webhook(drop_pending_updates=True)
+    logger.info("Вебхуки очищены")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":

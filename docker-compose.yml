@@ -68,9 +68,9 @@ services:
     networks:
       - math-network
     depends_on:
-      - gateway
+      gateway:
+        condition: service_started  
     restart: unless-stopped
-    # УБРАТЬ profiles: - optional
 
 networks:
   math-network:
