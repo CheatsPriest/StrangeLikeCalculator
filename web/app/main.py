@@ -121,6 +121,14 @@ async def read_root(request: Request):
     """Главная страница"""
     return templates.TemplateResponse("index.html", {"request": request})
 
+
+def extract_error_message(response: httpx.Response) -> str:
+    try:
+        error_data = response.json()
+        return error_data.get("detail", str(error_data))
+    except:
+        return response.text or "Неизвестная ошибка"
+
 @app.post("/calculate")
 async def calculate(
     request: Request,
@@ -148,9 +156,10 @@ async def calculate(
                         "calculation_time_ms": result.get("calculation_time_ms", 0)
                     }
                 else:
+                    error_message = extract_error_message(response)
                     return {
                         "success": False,
-                        "error": f"Ошибка от gateway: {response.text}",
+                        "error": f"Ошибка от gateway: {error_message}",
                         "status_code": response.status_code
                     }
                     
@@ -200,9 +209,10 @@ async def calculate(
                             "calculation_time_ms": result.get("calculation_time_ms", 0)
                         }
                     else:
+                        error_message = extract_error_message(response)
                         return {
                             "success": False,
-                            "error": f"Ошибка от gateway: {response.text}",
+                            "error": f"Ошибка от gateway: {error_message}",
                             "status_code": response.status_code
                         }
                         
